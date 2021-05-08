@@ -35,34 +35,15 @@ namespace MaterialControl
         public List<TargetData> Check(Entity entity, double volume)
         {
             List<TargetData> targets = new List<TargetData>();
-            if (!entity.Materials.Any())
-            {
-                var targetInStorage = Storage.StorageElements.FirstOrDefault(x => x.Id == entity.Id);
-
-                if (targetInStorage?.Volume < volume)
-                {
-                    var targetVolume = volume - (targetInStorage?.Volume ?? 0);
-                    targets.Add(new TargetData(entity, targetVolume));
-                }
-            }
+            if (!entity.Materials.Any()) targets.Add(new TargetData(entity, volume));
+            
             targets.AddRange(entity.Materials.SelectMany(x => Check(x.Entity, x.Volume)));
 
             return targets;
         }
 
-        private Storage Storage { get; }
     }
-    class Storage
-    {
-        public List<StorageElement> StorageElements { get; set; }
 
-        public class StorageElement
-        {
-            public int Id { get; set; }
-            public Entity Entity { get; set; }
-            public double Volume { get; set; }
-        }
-    }
     class Entity
     {
         public double Cost { get; set; }
