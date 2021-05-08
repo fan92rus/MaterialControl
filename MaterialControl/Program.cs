@@ -65,7 +65,14 @@ namespace MaterialControl
     {
         public double Cost { get; set; }
         public string Label { get; set; }
+        public MaterialGroup MaterialGroup { get; set; }
         public int Id { get; set; }
         public ICollection<MaterialController.TargetData> Materials { get; set; }
+    }
+
+    class MaterialGroup
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
