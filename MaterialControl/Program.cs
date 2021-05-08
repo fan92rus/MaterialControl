@@ -53,7 +53,7 @@ namespace MaterialControl
             MaterialController materialController = new MaterialController();
 
             var materials = materialController.Check(table, 20);
-            var sumCost = materials.Sum(x => x.Entity.Cost * x.Volume);
+            var sumCost = materials.Sum(x => x.Entity.Cost * x.FinalVolume);
             Console.WriteLine($"Сумарные траты на 20 столов {sumCost} Р");
             Console.WriteLine("Hello World!");
         }
@@ -72,19 +72,13 @@ namespace MaterialControl
 
             public Entity Entity { get; set; }
             public double Volume { get; set; }
+            public double FinalVolume => Volume + Volume * (PercentOfLoss * .01);
             public double PercentOfLoss { get; }
         }
-        public List<Specification> Check(Entity entity, double volume)
-        {
-            var targets = new List<Specification>();
-
-            if (entity.Materials == null || !entity.Materials.Any()) targets.Add(new Specification(entity, volume, 0));
-
-            if (entity.Materials != null) targets.AddRange(entity.Materials.SelectMany(x => Check(x.Entity, x.Volume * volume)));
-
-            return targets;
-        }
-
+        public List<Specification> Check(Entity entity, double volume, double loss = 0) =>
+            entity.Materials == null || !entity.Materials.Any()
+                ? new List<Specification>() { new Specification(entity, volume, loss) }
+                : entity.Materials.SelectMany(x => Check(x.Entity, x.Volume * volume, x.PercentOfLoss)).ToList();
     }
 
     class Entity
