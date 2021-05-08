@@ -16,11 +16,6 @@ namespace MaterialControl
 
     class MaterialController
     {
-        public MaterialController(Storage storage)
-        {
-            Storage = storage;
-        }
-
         public class TargetData
         {
             public TargetData(Entity entity, double volume)
